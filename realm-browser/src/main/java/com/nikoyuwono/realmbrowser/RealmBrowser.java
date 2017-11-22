@@ -19,7 +19,7 @@ import io.realm.annotations.RealmModule;
 /**
  * Created by nyuwono on 12/7/15.
  */
-@RealmModule(library=true)
+@RealmModule(library = true, allClasses = false)
 public class RealmBrowser {
 
     private static final String TAG = "RealmBrowser";
