@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.nikoyuwono.realmbrowser.RealmBrowser;
 
+import io.realm.Realm;
+
 public class SampleActivity extends AppCompatActivity {
 
     private RealmBrowser realmBrowser;
@@ -18,7 +20,7 @@ public class SampleActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        realmBrowser = new RealmBrowser();
+        realmBrowser = new RealmBrowser(Realm.getDefaultInstance().getConfiguration());
         realmBrowser.start();
         realmBrowser.showServerAddress(this);
     }

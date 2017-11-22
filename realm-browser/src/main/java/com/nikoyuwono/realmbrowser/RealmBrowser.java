@@ -12,20 +12,24 @@ import java.util.Set;
 import fi.iki.elonen.NanoHTTPD;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 import io.realm.RealmObject;
-import io.realm.annotations.RealmModule;
 
 /**
  * Created by nyuwono on 12/7/15.
  */
-@RealmModule(library = true, allClasses = false)
 public class RealmBrowser {
 
     private static final String TAG = "RealmBrowser";
 
     private static final int DEFAULT_PORT = 8765;
     private RealmBrowserHTTPD server;
+    private RealmConfiguration configuration;
+
+    public RealmBrowser(RealmConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     public void start() {
         start(DEFAULT_PORT);
@@ -34,7 +38,7 @@ public class RealmBrowser {
     public void start(int port) {
         try {
             if (server == null) {
-                server = new RealmBrowserHTTPD(port);
+                server = new RealmBrowserHTTPD(port, configuration);
             }
             server.start();
         } catch (IOException e) {
@@ -57,9 +61,12 @@ public class RealmBrowser {
     }
 
     private class RealmBrowserHTTPD extends NanoHTTPD {
+        RealmConfiguration configuration;
 
-        public RealmBrowserHTTPD(int port) throws IOException {
+        public RealmBrowserHTTPD(int port, RealmConfiguration configuration) throws IOException {
             super(port);
+
+            this.configuration = configuration;
         }
 
         @Override
@@ -67,10 +74,9 @@ public class RealmBrowser {
             Method method = session.getMethod();
             String uri = session.getUri();
             Log.d(TAG, method + " '" + uri + "' ");
-            Realm realm = Realm.getDefaultInstance();
-            DynamicRealm dynamicRealm = DynamicRealm.getInstance(realm.getConfiguration());
-            Set<Class<? extends RealmModel>> modelClasses =
-                    realm.getConfiguration().getRealmObjectClasses();
+            Realm realm = Realm.getInstance(configuration);
+            DynamicRealm dynamicRealm = DynamicRealm.getInstance(configuration);
+            Set<Class<? extends RealmModel>> modelClasses = configuration.getRealmObjectClasses();
             Map<String, String> params = session.getParms();
             String className = params.get("class_name");
             String selectedView = params.get("selected_view");
