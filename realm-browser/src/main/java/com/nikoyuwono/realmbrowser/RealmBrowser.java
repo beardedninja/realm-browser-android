@@ -12,11 +12,14 @@ import java.util.Set;
 import fi.iki.elonen.NanoHTTPD;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
+import io.realm.RealmModel;
 import io.realm.RealmObject;
+import io.realm.annotations.RealmModule;
 
 /**
  * Created by nyuwono on 12/7/15.
  */
+@RealmModule(library=true)
 public class RealmBrowser {
 
     private static final String TAG = "RealmBrowser";
@@ -66,7 +69,7 @@ public class RealmBrowser {
             Log.d(TAG, method + " '" + uri + "' ");
             Realm realm = Realm.getDefaultInstance();
             DynamicRealm dynamicRealm = DynamicRealm.getInstance(realm.getConfiguration());
-            Set<Class<? extends RealmObject>> modelClasses =
+            Set<Class<? extends RealmModel>> modelClasses =
                     realm.getConfiguration().getRealmObjectClasses();
             Map<String, String> params = session.getParms();
             String className = params.get("class_name");

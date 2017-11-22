@@ -7,6 +7,7 @@ import java.util.Set;
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmFieldType;
+import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmQuery;
@@ -79,11 +80,11 @@ public class HtmlBuilder {
         return stringBuilder.toString();
     }
 
-    public void showSidebar(Set<Class<? extends RealmObject>> modelClasses) {
+    public void showSidebar(Set<Class<? extends RealmModel>> modelClasses) {
         stringBuilder.append("<div class=\"sidebar\">")
                 .append("<table class=\"sideTable\">")
                 .append("<th>Tables</th>");
-        for (Class<? extends RealmObject> modelClass : modelClasses) {
+        for (Class<? extends RealmModel> modelClass : modelClasses) {
             stringBuilder.append("<tr><td><a href=\".?class_name=")
                     .append(modelClass.getName())
                     .append("\">")
