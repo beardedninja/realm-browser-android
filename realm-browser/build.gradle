@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 23
@@ -24,5 +25,4 @@ android {
 dependencies {
     testCompile 'junit:junit:4.12'
     compile 'org.nanohttpd:nanohttpd:2.2.0'
-    compile 'io.realm:realm-android:0.87.0'
 }
