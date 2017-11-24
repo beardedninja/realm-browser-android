@@ -8,7 +8,6 @@ import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.RealmFieldType;
 import io.realm.RealmModel;
-import io.realm.RealmObject;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -167,7 +166,6 @@ public class HtmlBuilder {
                 stringBuilder.append("<th>").append(fieldName).append("</th>");
                 index++;
             }
-
             RealmQuery<DynamicRealmObject> realmQuery = dynamicRealm.where(simpleTableName);
             for (Map.Entry<String, String> entry : queryMap.entrySet()) {
                 String fieldName = entry.getKey();

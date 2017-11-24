@@ -2,10 +2,12 @@ package com.nikoyuwono.realmbrowser;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +17,8 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 import io.realm.RealmObject;
+import io.realm.exceptions.RealmError;
+import io.realm.exceptions.RealmException;
 
 /**
  * Created by nyuwono on 12/7/15.
@@ -25,11 +29,6 @@ public class RealmBrowser {
 
     private static final int DEFAULT_PORT = 8765;
     private RealmBrowserHTTPD server;
-    private RealmConfiguration configuration;
-
-    public RealmBrowser(RealmConfiguration configuration) {
-        this.configuration = configuration;
-    }
 
     public void start() {
         start(DEFAULT_PORT);
@@ -38,7 +37,7 @@ public class RealmBrowser {
     public void start(int port) {
         try {
             if (server == null) {
-                server = new RealmBrowserHTTPD(port, configuration);
+                server = new RealmBrowserHTTPD(port);
             }
             server.start();
         } catch (IOException e) {
@@ -53,20 +52,16 @@ public class RealmBrowser {
     }
 
     public void showServerAddress(Context context) {
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
-        final String formatedIpAddress = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
+        final String formatedIpAddress = String.format(Locale.getDefault(), "%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
         Log.d(TAG, "Please access! http://" + formatedIpAddress + ":" + server.getListeningPort());
     }
 
     private class RealmBrowserHTTPD extends NanoHTTPD {
-        RealmConfiguration configuration;
-
-        public RealmBrowserHTTPD(int port, RealmConfiguration configuration) throws IOException {
+        public RealmBrowserHTTPD(int port) throws IOException {
             super(port);
-
-            this.configuration = configuration;
         }
 
         @Override
@@ -74,9 +69,10 @@ public class RealmBrowser {
             Method method = session.getMethod();
             String uri = session.getUri();
             Log.d(TAG, method + " '" + uri + "' ");
-            Realm realm = Realm.getInstance(configuration);
-            DynamicRealm dynamicRealm = DynamicRealm.getInstance(configuration);
-            Set<Class<? extends RealmModel>> modelClasses = configuration.getRealmObjectClasses();
+
+            Realm realm = Realm.getDefaultInstance();
+            DynamicRealm dynamicRealm = DynamicRealm.getInstance(realm.getConfiguration());
+            Set<Class<? extends RealmModel>> modelClasses = realm.getConfiguration().getRealmObjectClasses();
             Map<String, String> params = session.getParms();
             String className = params.get("class_name");
             String selectedView = params.get("selected_view");
@@ -114,7 +110,6 @@ public class RealmBrowser {
                 htmlBuilder.showEmptyView();
             }
             htmlBuilder.closeMainDisplay();
-
             realm.close();
             return newFixedLengthResponse(htmlBuilder.finish());
         }
