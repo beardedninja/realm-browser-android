@@ -23,10 +23,9 @@ public class HtmlBuilder {
     private static final String CSS = "<style>\n" +
             "html,body,div,ul,li,a { margin: 0;padding: 0;}\n" +
             "h1 { font-size: 1.4em;padding: 10px; }\n" +
-
             ".container { margin:0;overflow: hidden;width:100vw;height:100vh; }\n" +
-            ".sidebar { width: 30vw;height: 100vh;background-color:#0288D1;float:left; }\n" +
-            ".mainDisplay { width: 70vw;height: 100vh;float:left;background-color:#E1F5FE;display:table; }\n" +
+            ".sidebar { width: 20vw;height: 100vh;background-color:#0288D1;float:left; top:0; bottom:0; overflow-y:scroll;  }\n" +
+            ".mainDisplay { width: 80vw;height: 100vh;float:left;background-color:#E1F5FE;display:table; overflow:scroll; }\n" +
 
             ".sideTable { width: 100%;border-collapse: separate;border-spacing: 10px; }\n" +
             ".sideTable th { font-size: 1.4em;padding:5px;color:white; border-bottom: 1px solid white }\n" +
